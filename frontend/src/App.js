@@ -4,8 +4,11 @@ import Button from './components/Button.js';
 import './App.css';
 import EntityManager from './components/EntityManager.js';
 import EntityTable from './components/EntityTable.js';
-import InventoryForm from './components/FormInventaire.js';
-import Admin from './components/Admin.js';
+import FormInventaire from './components/FormInventaire.js';
+import DocumentationPage from './pages/DocumentationPage.js';
+import InventairePage from './pages/InventairePage.js';
+import SolutionPage from './pages/SolutionPage.js';
+import InfoPage from './pages/InfoPage.js';
 
 function App() {
   return (
@@ -39,20 +42,20 @@ function App() {
             </li>
             <li>
               <Button 
-                imageSrc="/assets/admin.png" 
-                altText="Admin Icon" 
-                buttonText="Admin" 
-                to="/admin" 
+                imageSrc="/assets/inventory.png" 
+                altText="Inventaire Icon" 
+                buttonText="Information" 
+                to="/information" 
               />
             </li>
           </ul>
         </nav>
 
         <Routes>
-          <Route path="/solution" element={<EntityManager entityType="solution" apiEndpoint="http://localhost:3020/solution" />} />
-          <Route path="/documentation" element={<EntityManager entityType="documentation" apiEndpoint="http://localhost:3020/documentation" />} />
-          <Route path="/inventaire" element={<EntityManager entityType="inventory" apiEndpoint="http://localhost:3020/inventaire" />} />
-          <Route path="/admin/*" element={<Admin />} />  
+          <Route path="/solution" element={<SolutionPage />} />
+          <Route path="/documentation" element={<DocumentationPage />} />
+          <Route path="/inventaire" element={<InventairePage />} />
+          <Route path="/information" element={<InfoPage />} />
         </Routes>
       </div>
     </Router>
@@ -102,7 +105,7 @@ function Inventaire() {
       <h2>Inventaire</h2>
       {error ? <p>{error}</p> : (
         <>
-          <InventoryForm onMaterialAdded={handleMaterialAdded} />
+          <FormInventaire onMaterialAdded={handleMaterialAdded} />
           <EntityTable
             entities={inventory}
             documentType="material"

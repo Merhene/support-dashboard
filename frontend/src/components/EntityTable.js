@@ -33,7 +33,6 @@ function EntityTable({ entities, documentType, onDelete }) {
       <table className="table">
         <thead>
           <tr>
-            {/* Afficher la colonne de case à cocher uniquement si showCheckboxes est vrai */}
             {showCheckboxes && <th></th>}
             {documentType === 'inventory' ? (
               <>
@@ -52,7 +51,7 @@ function EntityTable({ entities, documentType, onDelete }) {
         <tbody>
           {entities.map((entity) => (
             <tr key={entity.id}>
-              {/* Afficher la colonne de case à cocher uniquement si showCheckboxes est vrai */}
+
               {showCheckboxes && (
                 <td>
                   <input
