@@ -13,7 +13,6 @@ function SolutionPage() {
   return (
     <div>
       <h2>Solutions</h2>
-      <EntityManager entityType="solution" apiEndpoint="http://localhost:3020/solution" />
       <Button
         imageSrc="/assets/solution.png"
         altText="Solution Icon"
@@ -21,6 +20,7 @@ function SolutionPage() {
         onClick={handleButtonClick}
       />
       {showForm && <FormSolution />}
+      <EntityManager entityType="solution" apiEndpoint="http://localhost:3020/solution" />
     </div>
   );
 }

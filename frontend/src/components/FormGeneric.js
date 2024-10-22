@@ -8,7 +8,7 @@ function FormGeneric({ formFields, apiEndpoint, successMessage, errorMessage }) 
     const { name, type, value, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value, // Gérer la checkbox
+      [name]: type === 'checkbox' ? checked : value,
     });
   };
 
@@ -26,7 +26,7 @@ function FormGeneric({ formFields, apiEndpoint, successMessage, errorMessage }) 
 
       if (response.ok) {
         setFlashMessage(successMessage);
-        setFormData({}); // Réinitialiser les données du formulaire
+        setFormData({});
       } else {
         setFlashMessage(errorMessage);
       }
@@ -35,7 +35,6 @@ function FormGeneric({ formFields, apiEndpoint, successMessage, errorMessage }) 
       setFlashMessage(errorMessage);
     }
 
-    // Masquer le message flash après 3 secondes
     setTimeout(() => setFlashMessage(null), 3000);
   };
 
@@ -46,12 +45,11 @@ function FormGeneric({ formFields, apiEndpoint, successMessage, errorMessage }) 
           <div key={index}>
             <label>{field.label} :</label>
 
-            {/* Gérer différents types d'input, y compris checkbox */}
             {field.type === 'checkbox' ? (
               <input
                 type="checkbox"
                 name={field.name}
-                checked={!!formData[field.name]} // Gérer l'état des checkbox
+                checked={!!formData[field.name]}
                 onChange={handleChange}
               />
             ) : (

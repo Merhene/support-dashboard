@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 
-function EntityTable({ entities, documentType, onDelete }) {
+function EntityTable({ entities, documentType, onDelete, onUpdate }) {
   const [selectedEntities, setSelectedEntities] = useState([]);
-  const [showCheckboxes, setShowCheckboxes] = useState(false);
 
   const handleSelect = (id) => {
     if (selectedEntities.includes(id)) {
@@ -12,33 +11,45 @@ function EntityTable({ entities, documentType, onDelete }) {
     }
   };
 
+  const handleTogglePresent = (entity) => {
+    const updatedEntity = { ...entity, is_present: !entity.is_present };
+    onUpdate(updatedEntity); // Appelle onUpdate pour mettre à jour l'entité
+  };
+
   const handleDelete = () => {
     if (window.confirm(`Êtes-vous sûr de vouloir supprimer ces ${documentType}s ?`)) {
       onDelete(selectedEntities);
       setSelectedEntities([]);
-      setShowCheckboxes(false);
     }
   };
 
-  const toggleCheckboxes = () => {
-    setShowCheckboxes(!showCheckboxes);
+  const handleEdit = () => {
+    console.log('Modifier les éléments sélectionnés : ', selectedEntities);
   };
 
   return (
     <div>
-      <button onClick={toggleCheckboxes}>
-        {showCheckboxes ? `Annuler la sélection des ${documentType}s` : `Supprimer des ${documentType}s`}
-      </button>
-      {showCheckboxes && <button onClick={handleDelete}>Confirmer la suppression</button>}
+      {selectedEntities.length > 0 && (
+        <div>
+          <button onClick={handleEdit}>Modifier</button>
+          <button onClick={handleDelete}>Supprimer</button>
+        </div>
+      )}
+
       <table className="table">
         <thead>
           <tr>
-            {showCheckboxes && <th></th>}
+            <th></th>
             {documentType === 'inventory' ? (
               <>
                 <th>Nom</th>
                 <th>Type de matériel</th>
                 <th>Présent</th>
+              </>
+            ) : documentType === 'information' ? (
+              <>
+                <th>Titre</th>
+                <th>Contenu</th>
               </>
             ) : (
               <>
@@ -51,21 +62,32 @@ function EntityTable({ entities, documentType, onDelete }) {
         <tbody>
           {entities.map((entity) => (
             <tr key={entity.id}>
-
-              {showCheckboxes && (
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={selectedEntities.includes(entity.id)}
-                    onChange={() => handleSelect(entity.id)}
-                  />
-                </td>
-              )}
+              <td>
+                <input
+                  type="checkbox"
+                  checked={selectedEntities.includes(entity.id)}
+                  onChange={() => handleSelect(entity.id)}
+                />
+              </td>
               {documentType === 'inventory' ? (
                 <>
                   <td>{entity.name}</td>
                   <td>{entity.material_type}</td>
-                  <td>{entity.is_present ? 'Oui' : 'Non'}</td>
+                  <td>
+                    <label className="switch">
+                      <input
+                        type="checkbox"
+                        checked={entity.is_present}
+                        onChange={() => handleTogglePresent(entity)}
+                      />
+                      <span className="slider round"></span>
+                    </label>
+                  </td>
+                </>
+              ) : documentType === 'information' ? (
+                <>
+                  <td>{entity.title}</td>
+                  <td>{entity.informationtype}</td> {/* Affichage du contenu de l'information */}
                 </>
               ) : (
                 <>

@@ -13,7 +13,6 @@ function DocumentationPage() {
   return (
     <div>
       <h2>Documentation</h2>
-      <EntityManager entityType="documentation" apiEndpoint="http://localhost:3020/documentation" />
       <Button
         imageSrc="/assets/file.png"
         altText="Documentation Icon"
@@ -21,6 +20,7 @@ function DocumentationPage() {
         onClick={handleButtonClick}
       />
       {showForm && <FormDocumentation />}
+      <EntityManager entityType="documentation" apiEndpoint="http://localhost:3020/documentation" />
     </div>
   );
 }

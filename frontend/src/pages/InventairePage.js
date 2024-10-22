@@ -13,7 +13,6 @@ function InventairePage() {
   return (
     <div>
       <h2>Inventaire</h2>
-      <EntityManager entityType="inventory" apiEndpoint="http://localhost:3020/inventaire" />
       <Button
         imageSrc="/assets/inventory.png"
         altText="Inventaire Icon"
@@ -21,6 +20,7 @@ function InventairePage() {
         onClick={handleButtonClick}
       />
       {showForm && <FormInventaire />}
+      <EntityManager entityType="inventory" apiEndpoint="http://localhost:3020/inventaire" />
     </div>
   );
 }

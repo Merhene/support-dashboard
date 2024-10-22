@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import EntityTable from './EntityTable';
 
-function EntityManager({ entityType, apiEndpoint }) {
+function EntityManager({ entityType, apiEndpoint, formFields }) {
   const [entities, setEntities] = useState([]);
   const [error, setError] = useState(null);
 
@@ -21,16 +21,28 @@ function EntityManager({ entityType, apiEndpoint }) {
     fetchEntities();
   }, [apiEndpoint, entityType]);
 
-  const handleDeleteEntities = async (selectedEntities) => {
+  const handleUpdateEntity = async (updatedEntity) => {
     try {
-      await Promise.all(selectedEntities.map(async (entityId) => {
-        await fetch(`${apiEndpoint}/${entityId}`, {
-          method: 'DELETE',
-        });
-      }));
-      setEntities(entities.filter(entity => !selectedEntities.includes(entity.id)));
+      const response = await fetch(`${apiEndpoint}/${updatedEntity.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedEntity),
+      });
+
+      if (response.ok) {
+        const updatedData = await response.json();
+        setEntities((prevEntities) =>
+          prevEntities.map((entity) =>
+            entity.id === updatedData.id ? updatedData : entity
+          )
+        );
+      } else {
+        console.error('Erreur lors de la mise à jour');
+      }
     } catch (err) {
-      console.error(`Erreur lors de la suppression des ${entityType}s :`, err);
+      console.error(`Erreur lors de la mise à jour des ${entityType}s :`, err);
     }
   };
 
@@ -42,7 +54,10 @@ function EntityManager({ entityType, apiEndpoint }) {
         <EntityTable
           entities={entities}
           documentType={entityType}
-          onDelete={handleDeleteEntities}
+          onUpdate={handleUpdateEntity} // Passez onUpdate ici
+          onDelete={(selectedEntities) => {
+            // Implémentation de suppression ici
+          }}
         />
       )}
     </div>

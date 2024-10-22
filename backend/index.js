@@ -14,7 +14,6 @@ const pool = new Pool({
   port: 5432,
 });
 
-// Fonction générique pour récupérer des données (GET)
 const getEntities = async (req, res, tableName, documentType) => {
   let query;
   let params;
@@ -36,20 +35,24 @@ const getEntities = async (req, res, tableName, documentType) => {
   }
 };
 
-// Fonction générique pour ajouter des données (POST)
 const addEntity = async (req, res, tableName, documentType) => {
   try {
-    const { name_solution, link_solution, name, material_type, is_present } = req.body;
+    const { name_solution, link_solution, document_type, name, material_type, is_present, title, informationType } = req.body;
 
     let query;
     let values;
 
-    if (documentType) {
+    if (tableName === 'services') {
       query = `INSERT INTO ${tableName} (name_solution, link_solution, document_type) VALUES ($1, $2, $3) RETURNING *`;
-      values = [name_solution, link_solution, documentType];
-    } else {
+      values = [name_solution, link_solution, document_type];
+      
+    } else if (tableName === 'inventory') {
       query = `INSERT INTO ${tableName} (name, material_type, is_present) VALUES ($1, $2, $3) RETURNING *`;
       values = [name, material_type, is_present];
+      console.log(query);
+    } else if (tableName === 'information') {
+      query = `INSERT INTO ${tableName} (title, informationType) VALUES ($1, $2) RETURNING *`;
+      values = [title, informationType];
     }
 
     const result = await pool.query(query, values);
@@ -60,7 +63,7 @@ const addEntity = async (req, res, tableName, documentType) => {
   }
 };
 
-// Fonction générique pour mettre à jour des données (PUT)
+
 const updateEntity = async (req, res, tableName) => {
   const { id } = req.params;
   const { name_solution, link_solution, name, material_type, is_present } = req.body;
@@ -89,7 +92,6 @@ const updateEntity = async (req, res, tableName) => {
   }
 };
 
-// Fonction générique pour supprimer des données (DELETE)
 const deleteEntity = async (req, res, tableName) => {
   const { id } = req.params;
 
@@ -107,22 +109,25 @@ const deleteEntity = async (req, res, tableName) => {
   }
 };
 
-// Routes pour solution, documentation et inventaire
 app.get('/solution', (req, res) => getEntities(req, res, 'services', 'solution'));
 app.get('/documentation', (req, res) => getEntities(req, res, 'services', 'documentation'));
 app.get('/inventaire', (req, res) => getEntities(req, res, 'inventory', null));
+app.get('/information', (req, res) => getEntities(req, res, 'information', null));
 
 app.post('/solution', (req, res) => addEntity(req, res, 'services', 'solution'));
 app.post('/documentation', (req, res) => addEntity(req, res, 'services', 'documentation'));
 app.post('/inventaire', (req, res) => addEntity(req, res, 'inventory', null));
+app.post('/information', (req, res) => addEntity(req, res, 'information', null));
 
 app.put('/solution/:id', (req, res) => updateEntity(req, res, 'services'));
 app.put('/documentation/:id', (req, res) => updateEntity(req, res, 'services'));
 app.put('/inventaire/:id', (req, res) => updateEntity(req, res, 'inventory'));
+app.put('/information/:id', (req, res) => updateEntity(req, res, 'information'));
 
 app.delete('/solution/:id', (req, res) => deleteEntity(req, res, 'services'));
 app.delete('/documentation/:id', (req, res) => deleteEntity(req, res, 'services'));
 app.delete('/inventaire/:id', (req, res) => deleteEntity(req, res, 'inventory'));
+app.delete('/information/:id', (req, res) => deleteEntity(req, res, 'information'));
 
 const PORT = process.env.PORT || 3020;
 app.listen(PORT, () => {

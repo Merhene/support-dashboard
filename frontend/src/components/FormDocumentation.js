@@ -4,8 +4,9 @@ import '../styles/Form.css';
 
 function FormDocumentation() { 
   const formFields = [
-    { label: "Nom de la documentation", name: 'nameDocumentation', type: 'text', required: true },  
-    { label: 'Lien vers la documentation', name: 'linkDocumentation', type: 'text', required: true },   
+    { label: "Nom de la documentation", name: 'name_solution', type: 'text', required: true },  
+    { label: 'Lien vers la documentation', name: 'link_solution', type: 'text', required: true },
+    { label: 'Type de solution', name: 'document_type', type: 'text', required: true },
   ];
 
   return (

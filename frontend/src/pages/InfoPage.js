@@ -13,14 +13,14 @@ function InfoPage() {
   return (
     <div>
       <h2>Info Pratique</h2>
-      <EntityManager entityType="information" apiEndpoint="http://localhost:3020/information" />
       <Button
         imageSrc="/assets/inventory.png"
         altText="Inventaire Icon"
-        buttonText="AJouter une information"
+        buttonText="Ajouter une information"
         onClick={handleButtonClick}
       />
       {showForm && <FormInfo />}
+      <EntityManager entityType="information" apiEndpoint="http://localhost:3020/information" />
     </div>
   );
 }

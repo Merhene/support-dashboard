@@ -5,8 +5,8 @@ import '../styles/Form.css';
 function FormInventaire() {
   const formFields = [
     { label: "Nom du materiel", name: 'name', type: 'text', required: true }, 
-    { label: 'Type de materiel', name: 'materialType', type: 'text', required: true }, 
-   { label: 'Est présent', name: 'isPresent', type: 'checkbox', required: true },
+    { label: 'Type de materiel', name: 'material_type', type: 'text', required: true }, 
+   { label: 'Est présent', name: 'is_present', type: 'checkbox', required: true },
   ];
 
   return (
