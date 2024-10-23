@@ -8,7 +8,6 @@ function FormSolution() {
     { label: 'Lien vers la solution', name: 'link_solution', type: 'text', required: true }, 
     { label: 'Type de solution', name: 'document_type', type: 'text', required: true }, 
   ];
-
   return (
     <FormGeneric
       formFields={formFields}

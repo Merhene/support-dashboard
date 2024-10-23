@@ -1,8 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-function FormGeneric({ formFields, apiEndpoint, successMessage, errorMessage }) {
+function FormGeneric({ formFields, apiEndpoint, successMessage, errorMessage, initialData }) {
   const [formData, setFormData] = useState({});
   const [flashMessage, setFlashMessage] = useState(null);
+
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
+
+  if (!formFields) {
+    console.error("formFields n'est pas défini ou est passé comme undefined dans FormGeneric.");
+    return <div>Erreur : Les champs de formulaire ne sont pas correctement définis.</div>;
+  }
 
   const handleChange = (e) => {
     const { name, type, value, checked } = e.target;
@@ -17,10 +28,8 @@ function FormGeneric({ formFields, apiEndpoint, successMessage, errorMessage }) 
 
     try {
       const response = await fetch(apiEndpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        method: initialData ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
 
@@ -37,7 +46,7 @@ function FormGeneric({ formFields, apiEndpoint, successMessage, errorMessage }) 
 
     setTimeout(() => setFlashMessage(null), 3000);
   };
-
+  
   return (
     <div>
       <form onSubmit={handleSubmit}>

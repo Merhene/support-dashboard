@@ -19,10 +19,10 @@ const getEntities = async (req, res, tableName, documentType) => {
   let params;
 
   if (documentType) {
-    query = `SELECT * FROM ${tableName} WHERE document_type = $1`;
+    query = `SELECT name_solution, link_solution, service_type, document_type, id FROM ${tableName} WHERE document_type = $1`;
     params = [documentType];
   } else {
-    query = `SELECT * FROM ${tableName}`;
+    query = `SELECT name_solution, link_solution, service_type, document_type, id FROM ${tableName}`;
     params = [];
   }
 
@@ -49,7 +49,6 @@ const addEntity = async (req, res, tableName, documentType) => {
     } else if (tableName === 'inventory') {
       query = `INSERT INTO ${tableName} (name, material_type, is_present) VALUES ($1, $2, $3) RETURNING *`;
       values = [name, material_type, is_present];
-      console.log(query);
     } else if (tableName === 'information') {
       query = `INSERT INTO ${tableName} (title, informationType) VALUES ($1, $2) RETURNING *`;
       values = [title, informationType];

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function EntityTable({ entities, documentType, onDelete, onUpdate }) {
+function EntityTable({ entities, documentType, onDelete, onUpdate, setFormData }) {
   const [selectedEntities, setSelectedEntities] = useState([]);
 
   const handleSelect = (id) => {
@@ -13,7 +13,7 @@ function EntityTable({ entities, documentType, onDelete, onUpdate }) {
 
   const handleTogglePresent = (entity) => {
     const updatedEntity = { ...entity, is_present: !entity.is_present };
-    onUpdate(updatedEntity); // Appelle onUpdate pour mettre à jour l'entité
+    onUpdate(updatedEntity);
   };
 
   const handleDelete = () => {
@@ -24,7 +24,12 @@ function EntityTable({ entities, documentType, onDelete, onUpdate }) {
   };
 
   const handleEdit = () => {
-    console.log('Modifier les éléments sélectionnés : ', selectedEntities);
+    if (selectedEntities.length === 1) {
+      const entityToEdit = entities.find(entity => entity.id === selectedEntities[0]);
+      setFormData(entityToEdit);
+    } else {
+      console.log("Veuillez sélectionner une seule entité pour la modification.");
+    }
   };
 
   return (
@@ -87,7 +92,7 @@ function EntityTable({ entities, documentType, onDelete, onUpdate }) {
               ) : documentType === 'information' ? (
                 <>
                   <td>{entity.title}</td>
-                  <td>{entity.informationtype}</td> {/* Affichage du contenu de l'information */}
+                  <td>{entity.informationtype}</td>
                 </>
               ) : (
                 <>
