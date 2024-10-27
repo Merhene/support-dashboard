@@ -1,35 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import EntityTable from './EntityTable';
-import FormGeneric from './FormGeneric';
 import { Modal, Button } from 'react-bootstrap';
+import EntityTable from './EntityTable';
 
-
-function EntityManager({ entityType, apiEndpoint }) {
+function EntityManager({ entityType, apiEndpoint, FormComponent }) {
   const [entities, setEntities] = useState([]);
   const [selectedEntity, setSelectedEntity] = useState(null);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
-
-  let formFields = [];
-
-  if (entityType === "solution") {
-    formFields = [
-      { label: "Nom de la solution", name: 'name_solution', type: 'text', required: true },
-      { label: 'Lien vers la solution', name: 'link_solution', type: 'text', required: true },
-      { label: 'Type de solution', name: 'document_type', type: 'text', required: true },
-    ];
-  } else if (entityType === "inventory") {
-    formFields = [
-      { label: "Nom", name: 'name', type: 'text', required: true },
-      { label: "Type de matériel", name: 'material_type', type: 'text', required: true },
-      { label: "Présent", name: 'is_present', type: 'checkbox' },
-    ];
-  } else if (entityType === "information") {
-    formFields = [
-      { label: "Titre", name: 'title', type: 'text', required: true },
-      { label: "Contenu", name: 'informationtype', type: 'text', required: true },
-    ];
-  }
 
   useEffect(() => {
     const fetchEntities = async () => {
@@ -63,28 +40,12 @@ function EntityManager({ entityType, apiEndpoint }) {
           )
         );
         setSelectedEntity(null);
+        setShowModal(false);
       } else {
         console.error('Erreur lors de la mise à jour');
       }
     } catch (err) {
       console.error(`Erreur lors de la mise à jour des ${entityType}s :`, err);
-    }
-  };
-
-  const handleDeleteEntities = async (selectedEntities) => {
-    try {
-      await Promise.all(
-        selectedEntities.map(async (entityId) => {
-          await fetch(`${apiEndpoint}/${entityId}`, {
-            method: 'DELETE',
-          });
-        })
-      );
-      setEntities((prevEntities) =>
-        prevEntities.filter((entity) => !selectedEntities.includes(entity.id))
-      );
-    } catch (err) {
-      console.error(`Erreur lors de la suppression des ${entityType}s :`, err);
     }
   };
 
@@ -103,7 +64,6 @@ function EntityManager({ entityType, apiEndpoint }) {
             entities={entities}
             documentType={entityType}
             onUpdate={handleUpdateEntity}
-            onDelete={handleDeleteEntities}
             setFormData={handleEditEntity}
           />
           <Modal show={showModal} onHide={() => setShowModal(false)}>
@@ -111,17 +71,14 @@ function EntityManager({ entityType, apiEndpoint }) {
               <Modal.Title>Modifier l'entité</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-          {selectedEntity && (
-            <FormGeneric
-              formFields={formFields}
-              apiEndpoint={`${apiEndpoint}/${selectedEntity.id}`}
-              successMessage="Entité modifiée avec succès !"
-              errorMessage="Erreur lors de la modification de l'entité."
-              initialData={selectedEntity}
-            />
-          )}
-          </Modal.Body>
-          <Modal.Footer>
+              {selectedEntity && (
+                <FormComponent
+                  initialData={selectedEntity}
+                  onClose={() => setShowModal(false)}
+                />
+              )}
+            </Modal.Body>
+            <Modal.Footer>
               <Button variant="secondary" onClick={() => setShowModal(false)}>
                 Fermer
               </Button>

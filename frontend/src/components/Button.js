@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../styles/Button.css'; // On stylise le bouton dans un fichier CSS séparé
+import '../styles/Button.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function Button({ imageSrc, altText, buttonText, to, onClick }) {
   return (

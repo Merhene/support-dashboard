@@ -1,5 +1,6 @@
 import React from 'react';
 import FormGeneric from './FormGeneric';
+import { Modal, Button } from 'react-bootstrap';
 import '../styles/Form.css';
 
 function FormInfo() {

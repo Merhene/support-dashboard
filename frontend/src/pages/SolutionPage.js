@@ -4,23 +4,26 @@ import FormSolution from '../components/FormSolution.js';
 import Button from '../components/Button.js';
 
 function SolutionPage() {
-  const [showForm, setShowForm] = useState(false);
+  const [showSolutionModal, setShowSolutionModal] = useState(false);
 
-  const handleButtonClick = () => {
-    setShowForm(!showForm);
-  };
+  const handleOpenModal = () => setShowSolutionModal(true);
+  const handleCloseModal = () => setShowSolutionModal(false);
 
   return (
     <div>
-      <h2>Solutions</h2>
-      <Button
-        imageSrc="/assets/solution.png"
-        altText="Solution Icon"
-        buttonText="Ajouter Solution"
-        onClick={handleButtonClick}
+      <Button 
+        imageSrc="/assets/solution.png" 
+        altText="Ajouter une Solution" 
+        buttonText="Ajouter Solution" 
+        onClick={handleOpenModal} 
       />
-      {showForm && <FormSolution />}
-      <EntityManager entityType="solution" apiEndpoint="http://localhost:3020/solution" />
+      <FormSolution show={showSolutionModal} onClose={handleCloseModal} />
+      <EntityManager
+  entityType="solution"
+  apiEndpoint="http://localhost:3020/solution"
+  FormComponent={FormSolution} // Assurez-vous que c'est bien défini ici
+/>
+
     </div>
   );
 }

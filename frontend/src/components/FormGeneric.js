@@ -23,29 +23,30 @@ function FormGeneric({ formFields, apiEndpoint, successMessage, errorMessage, in
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    try {
-      const response = await fetch(apiEndpoint, {
-        method: initialData ? 'PUT' : 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
+  try {
+    const response = await fetch(apiEndpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...formData, document_type: 'solution' }),
+    });
 
-      if (response.ok) {
-        setFlashMessage(successMessage);
-        setFormData({});
-      } else {
-        setFlashMessage(errorMessage);
-      }
-    } catch (err) {
-      console.error('Erreur :', err);
+    if (response.ok) {
+      setFlashMessage(successMessage);
+      setFormData({});
+    } else {
       setFlashMessage(errorMessage);
     }
+  } catch (err) {
+    console.error('Erreur :', err);
+    setFlashMessage(errorMessage);
+  }
 
-    setTimeout(() => setFlashMessage(null), 3000);
-  };
+  setTimeout(() => setFlashMessage(null), 3000);
+};
+
   
   return (
     <div>

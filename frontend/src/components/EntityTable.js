@@ -58,7 +58,7 @@ function EntityTable({ entities, documentType, onDelete, onUpdate, setFormData }
               </>
             ) : (
               <>
-                <th>Nom de {documentType}</th>
+                <th>Nom de la {documentType}</th>
                 <th>Lien</th>
               </>
             )}
