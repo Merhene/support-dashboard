@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button } from 'react-bootstrap';
 import EntityTable from './EntityTable';
+import FormSolution from './FormSolution.js';
+import FormInventaire from './FormInventaire.js';
+import FormInfo from './FormInfo.js';
+import FormDocumentation from './FormDocumentation.js';
 
-function EntityManager({ entityType, apiEndpoint, FormComponent }) {
+function EntityManager({ entityType, apiEndpoint }) {
   const [entities, setEntities] = useState([]);
   const [selectedEntity, setSelectedEntity] = useState(null);
   const [error, setError] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     const fetchEntities = async () => {
@@ -40,7 +43,7 @@ function EntityManager({ entityType, apiEndpoint, FormComponent }) {
           )
         );
         setSelectedEntity(null);
-        setShowModal(false);
+        setShowForm(false);
       } else {
         console.error('Erreur lors de la mise à jour');
       }
@@ -49,10 +52,44 @@ function EntityManager({ entityType, apiEndpoint, FormComponent }) {
     }
   };
 
+  const handleDeleteEntities = async (selectedEntities) => {
+    try {
+      await Promise.all(
+        selectedEntities.map(async (entityId) => {
+          await fetch(`${apiEndpoint}/${entityId}`, {
+            method: 'DELETE',
+          });
+        })
+      );
+      setEntities((prevEntities) =>
+        prevEntities.filter((entity) => !selectedEntities.includes(entity.id))
+      );
+    } catch (err) {
+      console.error(`Erreur lors de la suppression des ${entityType}s :`, err);
+    }
+  };
+
   const handleEditEntity = (entity) => {
     setSelectedEntity(entity);
-    setShowModal(true);
+    setShowForm(true);
   };
+
+  const getFormComponent = () => {
+    switch (entityType) {
+      case 'solution':
+        return FormSolution;
+      case 'inventory':
+        return FormInventaire;
+      case 'information':
+        return FormInfo;
+      case 'documentation':
+        return FormDocumentation;
+      default:
+        return null;
+    }
+  };
+
+  const FormComponent = getFormComponent();
 
   return (
     <div>
@@ -64,26 +101,19 @@ function EntityManager({ entityType, apiEndpoint, FormComponent }) {
             entities={entities}
             documentType={entityType}
             onUpdate={handleUpdateEntity}
+            onDelete={handleDeleteEntities}
             setFormData={handleEditEntity}
           />
-          <Modal show={showModal} onHide={() => setShowModal(false)}>
-            <Modal.Header closeButton>
-              <Modal.Title>Modifier l'entité</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              {selectedEntity && (
-                <FormComponent
-                  initialData={selectedEntity}
-                  onClose={() => setShowModal(false)}
-                />
-              )}
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={() => setShowModal(false)}>
-                Fermer
-              </Button>
-            </Modal.Footer>
-          </Modal>
+          {showForm && selectedEntity && FormComponent && (
+            <FormComponent
+              show={showForm}
+              onClose={() => {
+                setSelectedEntity(null);
+                setShowForm(false);
+              }}
+              initialData={selectedEntity}
+            />
+          )}
         </>
       )}
     </div>

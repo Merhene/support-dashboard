@@ -4,24 +4,27 @@ import FormDocumentation from '../components/FormDocumentation.js';
 import Button from '../components/Button.js';
 
 function DocumentationPage() {
-  const [showForm, setShowForm] = useState(false);
+  const [showDocumentationModal, setShowDocumentationModal] = useState(false);
 
-  const handleButtonClick = () => {
-    setShowForm(!showForm);
-  };
+  const handleOpenModal = () => setShowDocumentationModal(true);
+  const handleCloseModal = () => setShowDocumentationModal(false);
 
   return (
     <div>
-      <h2>Documentation</h2>
       <Button
         imageSrc="/assets/file.png"
         altText="Documentation Icon"
         buttonText="Ajouter Documentation"
-        onClick={handleButtonClick}
+        onClick={handleOpenModal}
       />
-      {showForm && <FormDocumentation />}
-      <EntityManager entityType="documentation" apiEndpoint="http://localhost:3020/documentation" />
-    </div>
+      <FormDocumentation show={showDocumentationModal} onClose={handleCloseModal} />
+      <EntityManager
+        entityType="documentation"
+        apiEndpoint="http://localhost:3020/documentation"
+        FormComponent={FormDocumentation} // Assurez-vous que c'est bien défini ici
+      />
+
+</div>
   );
 }
 

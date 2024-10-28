@@ -1,11 +1,9 @@
 form {
     background-color: aliceblue;
-    padding: 10%;
+    padding: 5%;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 75vw;
-    max-width: 50%;
-    margin: 20px auto;
+    
 }
 
 form div {
@@ -27,11 +25,15 @@ form input {
     border-radius: 4px;
 }
 
+form select {
+    display: flex;
+    justify-content: center;
+    width: 75%;
+}
+
 form button {
-    width: 25vw;
+    width: 10vw;
     padding: 10px;
-    margin-left: 20%;
-    margin-right: 25%;
     background-color: #4CAF50;
     color: white;
     border: none;
@@ -49,3 +51,17 @@ p {
     color: #333;
     text-align: center;
   }
+
+  div.modal-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+div.modal-body {
+    width: 100%;
+}
+
+div.modal-header {
+    width: 100%;
+}

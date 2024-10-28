@@ -4,23 +4,26 @@ import FormInventaire from '../components/FormInventaire.js';
 import Button from '../components/Button.js';
 
 function InventairePage() {
-  const [showForm, setShowForm] = useState(false);
+  const [showInventaireModal, setShowInventaireModal] = useState(false);
 
-  const handleButtonClick = () => {
-    setShowForm(!showForm);
-  };
+  const handleOpenModal = () => setShowInventaireModal(true);
+  const handleCloseModal = () => setShowInventaireModal(false);
 
   return (
     <div>
-      <h2>Inventaire</h2>
       <Button
-        imageSrc="/assets/inventory.png"
+        imageSrc="/assets/file.png"
         altText="Inventaire Icon"
-        buttonText="Ajouter du matériel"
-        onClick={handleButtonClick}
+        buttonText="Ajouter du materiel"
+        onClick={handleOpenModal}
       />
-      {showForm && <FormInventaire />}
-      <EntityManager entityType="inventory" apiEndpoint="http://localhost:3020/inventaire" />
+      <FormInventaire show={showInventaireModal} onClose={handleCloseModal} />
+      <EntityManager
+        entityType="inventory"
+        apiEndpoint="http://localhost:3020/inventaire"
+        FormComponent={FormInventaire} // Assurez-vous que c'est bien défini ici
+      />
+
     </div>
   );
 }

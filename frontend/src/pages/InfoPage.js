@@ -3,26 +3,29 @@ import EntityManager from '../components/EntityManager.js';
 import FormInfo from '../components/FormInfo.js';
 import Button from '../components/Button.js';
 
-function InfoPage() {
-  const [showForm, setShowForm] = useState(false);
+function InformationPage() {
+  const [showInformationModal, setShowInformationModal] = useState(false);
 
-  const handleButtonClick = () => {
-    setShowForm(!showForm);
-  };
+  const handleOpenModal = () => setShowInformationModal(true);
+  const handleCloseModal = () => setShowInformationModal(false);
 
   return (
     <div>
-      <h2>Info Pratique</h2>
       <Button
-        imageSrc="/assets/inventory.png"
+        imageSrc="/assets/file.png"
         altText="Inventaire Icon"
         buttonText="Ajouter une information"
-        onClick={handleButtonClick}
+        onClick={handleOpenModal}
       />
-      {showForm && <FormInfo />}
-      <EntityManager entityType="information" apiEndpoint="http://localhost:3020/information" />
+      <FormInfo show={showInformationModal} onClose={handleCloseModal} />
+      <EntityManager
+        entityType="information"
+        apiEndpoint="http://localhost:3020/information"
+        FormComponent={FormInfo} // Assurez-vous que c'est bien défini ici
+      />
+
     </div>
   );
 }
 
-export default InfoPage;
+export default InformationPage;

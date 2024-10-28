@@ -14,15 +14,30 @@ const pool = new Pool({
   port: 5432,
 });
 
+pool.connect((err, client, release) => {
+  if (err) {
+    return console.error('Erreur de connexion à la base de données', err.stack);
+  }
+  console.log('Connexion réussie à la base de données');
+  release();
+});
+
 const getEntities = async (req, res, tableName, documentType) => {
   let query;
   let params;
 
-  if (documentType) {
-    query = `SELECT name_solution, link_solution, service_type, document_type, id FROM ${tableName} WHERE document_type = $1`;
-    params = [documentType];
-  } else {
+  if (tableName === 'services') {
     query = `SELECT name_solution, link_solution, service_type, document_type, id FROM ${tableName}`;
+    params = [];
+    if (documentType) {
+      query += ` WHERE document_type = $1`;
+      params = [documentType];
+    }
+  } else if (tableName === 'inventory') {
+    query = `SELECT id, name, material_type, is_present FROM ${tableName}`;
+    params = [];
+  } else if (tableName === 'information') {
+    query = `SELECT id, title, informationtype FROM ${tableName}`;
     params = [];
   }
 
@@ -65,17 +80,20 @@ const addEntity = async (req, res, tableName, documentType) => {
 
 const updateEntity = async (req, res, tableName) => {
   const { id } = req.params;
-  const { name_solution, link_solution, name, material_type, is_present } = req.body;
+  const { title, informationType, name, material_type, is_present, document_type } = req.body;
 
   let query;
   let values;
 
   if (tableName === 'services') {
-    query = `UPDATE ${tableName} SET name_solution = $1, link_solution = $2 WHERE id = $3 RETURNING *`;
-    values = [name_solution, link_solution, id];
-  } else {
+    query = `UPDATE ${tableName} SET name_solution = $1, link_solution = $2, document_type = $3 WHERE id = $4 RETURNING *`;
+    values = [req.body.name_solution, req.body.link_solution, req.body.document_type, id];
+  } else if (tableName === 'inventory') {
     query = `UPDATE ${tableName} SET name = $1, material_type = $2, is_present = $3 WHERE id = $4 RETURNING *`;
     values = [name, material_type, is_present, id];
+  } else if (tableName === 'information') {
+    query = `UPDATE ${tableName} SET title = $1, informationType = $2 WHERE id = $3 RETURNING *`;
+    values = [title, informationType, id];
   }
 
   try {

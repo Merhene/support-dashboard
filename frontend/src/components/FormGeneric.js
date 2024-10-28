@@ -10,6 +10,8 @@ function FormGeneric({ formFields, apiEndpoint, successMessage, errorMessage, in
     }
   }, [initialData]);
 
+  console.log(initialData);
+
   if (!formFields) {
     console.error("formFields n'est pas défini ou est passé comme undefined dans FormGeneric.");
     return <div>Erreur : Les champs de formulaire ne sont pas correctement définis.</div>;
@@ -23,31 +25,38 @@ function FormGeneric({ formFields, apiEndpoint, successMessage, errorMessage, in
     });
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  try {
-    const response = await fetch(apiEndpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...formData, document_type: 'solution' }),
-    });
+    try {
+      const method = initialData ? 'PUT' : 'POST';
+      const endpoint = initialData ? `${apiEndpoint}/${initialData.id}` : apiEndpoint;
 
-    if (response.ok) {
-      setFlashMessage(successMessage);
-      setFormData({});
-    } else {
+      const response = await fetch(endpoint, {
+        method: method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      console.log("Méthode utilisée:", method);
+      console.log("URL utilisée:", endpoint);
+      console.log("Données envoyées:", formData);
+
+      if (response.ok) {
+        setFlashMessage(successMessage);
+        setFormData({});
+        
+      } else {
+        setFlashMessage(errorMessage);
+      }
+    } catch (err) {
+      console.error('Erreur :', err);
       setFlashMessage(errorMessage);
     }
-  } catch (err) {
-    console.error('Erreur :', err);
-    setFlashMessage(errorMessage);
-  }
 
-  setTimeout(() => setFlashMessage(null), 3000);
-};
+    setTimeout(() => setFlashMessage(null), 3000);
+  };
 
-  
   return (
     <div>
       <form onSubmit={handleSubmit}>
@@ -62,6 +71,17 @@ const handleSubmit = async (e) => {
                 checked={!!formData[field.name]}
                 onChange={handleChange}
               />
+            ) : field.type === 'select' ? (
+              <select
+                name={field.name}
+                value={formData[field.name] || ''}
+                onChange={handleChange}
+                required={field.required}
+              >
+                <option value="">Sélectionner un type</option>
+                <option value="solution">Solution</option>
+                <option value="documentation">Documentation</option>
+              </select>
             ) : (
               <input
                 type={field.type}
@@ -73,7 +93,7 @@ const handleSubmit = async (e) => {
             )}
           </div>
         ))}
-        <button type="submit">Ajouter</button>
+        <button type="submit">{initialData ? "Mettre à jour" : "Ajouter"}</button>
       </form>
 
       {flashMessage && <div className="flash-message">{flashMessage}</div>}
