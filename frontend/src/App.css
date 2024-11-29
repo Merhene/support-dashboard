@@ -236,7 +236,6 @@ img {
 }
 
 table {
-  width: 100%;
   border-collapse: collapse;
   margin: 20px 0;
   font-size: 18px;
@@ -286,4 +285,11 @@ a:hover {
   margin: 5%;
   padding: 15px;
   justify-content: center;
+}
+
+nav>ul {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
 }

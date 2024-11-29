@@ -1,70 +1,35 @@
-import React, { useState } from 'react';
+import React from 'react';
+import FormGeneric from './FormGeneric';
+import { Modal, Button } from 'react-bootstrap';
 import '../styles/Form.css';
 
-function FormDocumentation() {
-  const [nameDocumentation, setNameDocumentation] = useState('');
-  const [linkDocumentation, setLinkDocumentation] = useState('');
-  const [flashMessage, setFlashMessage] = useState(null);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const newDocumentation = {
-      name_solution: nameDocumentation,  // Réutilisation du même champ dans la table
-      link_solution: linkDocumentation,  // Réutilisation du même champ
-    };
-
-    try {
-      const response = await fetch('http://localhost:3020/documentation', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newDocumentation),
-      });
-
-      if (response.ok) {
-        setNameDocumentation('');
-        setLinkDocumentation('');
-        setFlashMessage('Documentation ajoutée avec succès!');
-      } else {
-        setFlashMessage('Erreur lors de l\'ajout de la documentation.');
-      }
-    } catch (err) {
-      console.error('Erreur lors de l\'ajout de la documentation :', err);
-      setFlashMessage('Erreur lors de l\'ajout de la documentation.');
-    }
-
-    // Masquer le message flash après 3 secondes
-    setTimeout(() => setFlashMessage(null), 3000);
-  };
+function FormDocumentation({ show, onClose, initialData }) { 
+  const formFields = [
+    { label: "Nom de la documentation", name: 'name_solution', type: 'text', required: true },  
+    { label: 'Lien vers la documentation', name: 'link_solution', type: 'text', required: true },
+    { label: 'Type de document', name: 'document_type', type: 'select', required: true },
+  ];
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Nom de la documentation :</label>
-          <input
-            type="text"
-            value={nameDocumentation}
-            onChange={(e) => setNameDocumentation(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Lien de la documentation :</label>
-          <input
-            type="url"
-            value={linkDocumentation}
-            onChange={(e) => setLinkDocumentation(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Ajouter Documentation</button>
-      </form>
-
-      {flashMessage && <div className="flash-message">{flashMessage}</div>}
-    </div>
+    <Modal show={show} onHide={onClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>{initialData ? "Modifier une documentation" : "Ajouter une documentation"}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <FormGeneric
+          formFields={formFields}
+          apiEndpoint="http://localhost:3020/documentation"
+          successMessage={initialData ? "Documentation modifiée avec succès!" : "Documentation ajoutée avec succès!"}
+          errorMessage="Erreur lors de l'ajout ou de la modification de la documentation."
+          initialData={initialData}
+        />
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={onClose}>
+          Fermer
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 }
 
